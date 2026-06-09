@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String get id; String get name; String? get email; UserRole get role; String? get avatarUrl;@JsonKey(defaultValue: false) bool get mustChangePassword;
+ String get id; String get name; String? get email; UserRole get role; String? get avatarUrl;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.mustChangePassword, mustChangePassword) || other.mustChangePassword == mustChangePassword));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,email,role,avatarUrl,mustChangePassword);
+int get hashCode => Object.hash(runtimeType,id,name,email,role,avatarUrl);
 
 @override
 String toString() {
-  return 'UserModel(id: $id, name: $name, email: $email, role: $role, avatarUrl: $avatarUrl, mustChangePassword: $mustChangePassword)';
+  return 'UserModel(id: $id, name: $name, email: $email, role: $role, avatarUrl: $avatarUrl)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String? email, UserRole role, String? avatarUrl,@JsonKey(defaultValue: false) bool mustChangePassword
+ String id, String name, String? email, UserRole role, String? avatarUrl
 });
 
 
@@ -65,15 +65,14 @@ class _$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? email = freezed,Object? role = null,Object? avatarUrl = freezed,Object? mustChangePassword = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? email = freezed,Object? role = null,Object? avatarUrl = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as UserRole,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
-as String?,mustChangePassword: null == mustChangePassword ? _self.mustChangePassword : mustChangePassword // ignore: cast_nullable_to_non_nullable
-as bool,
+as String?,
   ));
 }
 
@@ -158,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String? email,  UserRole role,  String? avatarUrl, @JsonKey(defaultValue: false)  bool mustChangePassword)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String? email,  UserRole role,  String? avatarUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.name,_that.email,_that.role,_that.avatarUrl,_that.mustChangePassword);case _:
+return $default(_that.id,_that.name,_that.email,_that.role,_that.avatarUrl);case _:
   return orElse();
 
 }
@@ -179,10 +178,10 @@ return $default(_that.id,_that.name,_that.email,_that.role,_that.avatarUrl,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String? email,  UserRole role,  String? avatarUrl, @JsonKey(defaultValue: false)  bool mustChangePassword)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String? email,  UserRole role,  String? avatarUrl)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
-return $default(_that.id,_that.name,_that.email,_that.role,_that.avatarUrl,_that.mustChangePassword);case _:
+return $default(_that.id,_that.name,_that.email,_that.role,_that.avatarUrl);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +198,10 @@ return $default(_that.id,_that.name,_that.email,_that.role,_that.avatarUrl,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String? email,  UserRole role,  String? avatarUrl, @JsonKey(defaultValue: false)  bool mustChangePassword)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String? email,  UserRole role,  String? avatarUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.name,_that.email,_that.role,_that.avatarUrl,_that.mustChangePassword);case _:
+return $default(_that.id,_that.name,_that.email,_that.role,_that.avatarUrl);case _:
   return null;
 
 }
@@ -214,7 +213,7 @@ return $default(_that.id,_that.name,_that.email,_that.role,_that.avatarUrl,_that
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({required this.id, required this.name, this.email, required this.role, this.avatarUrl, @JsonKey(defaultValue: false) required this.mustChangePassword});
+  const _UserModel({required this.id, required this.name, this.email, required this.role, this.avatarUrl});
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String id;
@@ -222,7 +221,6 @@ class _UserModel implements UserModel {
 @override final  String? email;
 @override final  UserRole role;
 @override final  String? avatarUrl;
-@override@JsonKey(defaultValue: false) final  bool mustChangePassword;
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +235,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.mustChangePassword, mustChangePassword) || other.mustChangePassword == mustChangePassword));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.role, role) || other.role == role)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,email,role,avatarUrl,mustChangePassword);
+int get hashCode => Object.hash(runtimeType,id,name,email,role,avatarUrl);
 
 @override
 String toString() {
-  return 'UserModel(id: $id, name: $name, email: $email, role: $role, avatarUrl: $avatarUrl, mustChangePassword: $mustChangePassword)';
+  return 'UserModel(id: $id, name: $name, email: $email, role: $role, avatarUrl: $avatarUrl)';
 }
 
 
@@ -257,7 +255,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String? email, UserRole role, String? avatarUrl,@JsonKey(defaultValue: false) bool mustChangePassword
+ String id, String name, String? email, UserRole role, String? avatarUrl
 });
 
 
@@ -274,15 +272,14 @@ class __$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? email = freezed,Object? role = null,Object? avatarUrl = freezed,Object? mustChangePassword = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? email = freezed,Object? role = null,Object? avatarUrl = freezed,}) {
   return _then(_UserModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as UserRole,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
-as String?,mustChangePassword: null == mustChangePassword ? _self.mustChangePassword : mustChangePassword // ignore: cast_nullable_to_non_nullable
-as bool,
+as String?,
   ));
 }
 

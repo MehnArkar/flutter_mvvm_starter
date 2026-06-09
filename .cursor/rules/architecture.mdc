@@ -1,0 +1,59 @@
+---
+description: Project architecture overview, data flow, folder structure, and layer boundaries
+alwaysApply: true
+---
+
+# Architecture — Feature-based MVVM + Repository
+
+Data flows in one direction:
+
+```
+View → Cubit (ViewModel) → Repository → DataSource
+```
+
+Each feature is self-contained under `lib/features/<feature>/` with `data/`, `view/`, and `viewModel/` sub-folders.
+No Use Case layer by default — add one only when logic is shared across features or complex enough to test in isolation (see `use-cases.mdc`).
+
+## Folder structure
+
+```
+lib/
+├── app/                    # MyApp root widget
+├── config/
+│   ├── routes/             # AppRoutes (name constants) + AppRouter (GoRouter)
+│   └── theme/              # AppColor, AppDimensions, AppTextStyle, AppTheme
+├── core/
+│   ├── di/                 # service_locator.dart + modules/<feature>_module.dart
+│   ├── error/failure.dart  # ServerFailure / NetworkFailure / SystemFailure
+│   ├── local/              # SessionManager (secure) + LocalDataSource (prefs)
+│   └── network/            # ApiClient, ApiEndpoints, AuthInterceptor
+├── features/<feature>/
+│   ├── data/               # models/, datasources/, repositories/
+│   ├── view/               # pages/, widgets/
+│   └── viewModel/          # Cubits
+├── services/firebase/      # FcmService
+└── utils/                  # AppDialog, extensions, validators, states
+```
+
+## Layer responsibilities
+
+| Layer | Does | Must NOT |
+|---|---|---|
+| **View** | Render UI, dispatch cubit calls, react in `BlocListener` | Business logic, repo/storage access |
+| **Cubit** | Emit states, call repositories, manage session lifecycle | HTTP logic, JSON parsing, render UI |
+| **Repository** | Parse `Response` → typed model, return `Either<Failure, T>` | Emit states, make UI decisions |
+| **DataSource** | HTTP via `requestAPI()`, return raw `Either<Failure, Response>` | Parse JSON, know about models |
+| **SessionManager** | Tokens + user JSON (FlutterSecureStorage) | Non-sensitive data, business logic |
+| **LocalDataSource** | Non-sensitive prefs (SharedPreferences) | Sensitive data |
+
+A Cubit may inject `SessionManager` directly **only** for session lifecycle (sign-in / logout). All other data goes through a Repository.
+
+## Naming conventions
+
+- Feature folders: `snake_case` (e.g. `user_profile`, `order_history`)
+- Classes: `PascalCase` · Files: `snake_case.dart`
+- Cubits in `viewModel/` · Pages in `view/pages/` · Widgets in `view/widgets/`
+
+## Auth feature — demo only
+
+`AuthRepository.signIn` returns stub data. Replace with a real `_dataSource.signIn(...)` call when connecting a backend. The rest of the auth scaffold (interceptor, session, routing) is production-ready.

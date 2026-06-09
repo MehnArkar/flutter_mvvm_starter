@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_mvvm_starter/core/error/failure.dart';
 import 'package:flutter_mvvm_starter/features/auth/data/datasources/auth_data_source.dart';
 import 'package:flutter_mvvm_starter/features/auth/data/models/user_model.dart';
+import 'package:flutter_mvvm_starter/features/auth/data/models/user_role.dart';
 
 /// Named record returned by [signIn].
 typedef SignInResult = ({
@@ -24,28 +25,28 @@ class AuthRepository {
 
   // ─── Sign in ──────────────────────────────────────────────────────────────
 
+  /// Demo-only sign-in — accepts any credentials and returns a stub session.
+  ///
+  /// Replace with a real API call via [_dataSource.signIn] when wiring
+  /// your backend.
   Future<Either<Failure, SignInResult>> signIn({
-    required String username,
-    required String password,
+    required String email,
+    required String password, // ignored in demo mode
   }) async {
-    final result = await _dataSource.signIn(
-      username: username,
-      password: password,
+    await Future<void>.delayed(const Duration(milliseconds: 400));
+
+    final user = UserModel(
+      id: 'demo-user',
+      name: 'Demo User',
+      email: email,
+      role: UserRole.staff,
     );
-    return result.fold(
-      left,
-      (response) {
-        final token = response.data['token'] as String;
-        final refreshToken = response.data['refreshToken'] as String;
-        final user = UserModel.fromJson(
-            response.data['user'] as Map<String, dynamic>);
-        return right((
-          token: token,
-          refreshToken: refreshToken,
-          user: user,
-        ));
-      },
-    );
+
+    return right((
+      token: 'demo-access-token',
+      refreshToken: 'demo-refresh-token',
+      user: user,
+    ));
   }
 
   // ─── Logout ───────────────────────────────────────────────────────────────
@@ -54,22 +55,6 @@ class AuthRepository {
     required String refreshToken,
   }) async {
     final result = await _dataSource.logout(refreshToken: refreshToken);
-    return result.fold(
-      left,
-      (response) => right(response.data['success'] as bool? ?? true),
-    );
-  }
-
-  // ─── Change password ──────────────────────────────────────────────────────
-
-  Future<Either<Failure, bool>> changePassword({
-    required String currentPassword,
-    required String newPassword,
-  }) async {
-    final result = await _dataSource.changePassword(
-      currentPassword: currentPassword,
-      newPassword: newPassword,
-    );
     return result.fold(
       left,
       (response) => right(response.data['success'] as bool? ?? true),

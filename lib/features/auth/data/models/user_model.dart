@@ -16,7 +16,6 @@ abstract class UserModel with _$UserModel {
     String? email,
     required UserRole role,
     String? avatarUrl,
-    @JsonKey(defaultValue: false) required bool mustChangePassword,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

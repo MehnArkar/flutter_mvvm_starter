@@ -1,0 +1,79 @@
+---
+description: Step-by-step checklist and templates for scaffolding a new feature
+alwaysApply: false
+---
+
+# New Feature Checklist
+
+Replace `foo_bar` / `FooBar` with your feature name throughout.
+
+## 1. Create files
+
+```
+lib/features/foo_bar/
+  data/
+    models/        foo_bar_model.dart        ← @freezed + @JsonSerializable
+    datasources/   foo_bar_data_source.dart  ← extends ApiClient
+    repositories/  foo_bar_repository.dart   ← Either<Failure, T> returns
+  view/
+    pages/         foo_bar_page.dart         ← BlocProvider → injector<FooBarCubit>()
+    widgets/       (sub-widgets as needed)
+  viewModel/       foo_bar_cubit.dart        ← Cubit<DefaultState<FooBarModel>>
+```
+
+## 2. Add route
+
+`lib/config/routes/app_routes.dart`:
+```dart
+static const String fooBar = 'foo_bar';
+```
+
+`lib/config/routes/app_router.dart`:
+```dart
+GoRoute(
+  path: '/${AppRoutes.fooBar}',
+  name: AppRoutes.fooBar,
+  builder: (_, __) => const FooBarPage(),
+),
+```
+
+## 3. Create DI module
+
+`lib/core/di/modules/foo_bar_module.dart`:
+```dart
+class FooBarModule {
+  static void register() {
+    injector.registerLazySingleton(
+      () => FooBarDataSource(dio: injector<Dio>()),
+    );
+    injector.registerLazySingleton(
+      () => FooBarRepository(dataSource: injector<FooBarDataSource>()),
+    );
+    injector.registerFactory(
+      () => FooBarCubit(repository: injector<FooBarRepository>()),
+    );
+  }
+}
+```
+
+`lib/core/di/service_locator.dart` — add inside `injectDependencies()`:
+```dart
+FooBarModule.register();
+```
+
+## 4. Generate code
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+
+## Checklist
+
+- [ ] Model with `@freezed` + both `part` directives
+- [ ] DataSource extending `ApiClient`, using `requestAPI()`
+- [ ] Repository returning `Either<Failure, T>`, using `left` / `right()`
+- [ ] Cubit emitting `loading` → `success` / `fail`
+- [ ] Page providing cubit via `BlocProvider(create: (_) => injector<FooBarCubit>())`
+- [ ] Route name added to `AppRoutes`, route added to `AppRouter`
+- [ ] DI module created and registered in `ServiceLocator`
+- [ ] Code generation run

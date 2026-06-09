@@ -5,8 +5,6 @@ import 'package:flutter_mvvm_starter/config/theme/app_dimensions.dart';
 import 'package:flutter_mvvm_starter/config/routes/app_routes.dart';
 import 'package:flutter_mvvm_starter/core/di/service_locator.dart';
 import 'package:flutter_mvvm_starter/features/auth/data/models/user_model.dart';
-import 'package:flutter_mvvm_starter/features/auth/view/widgets/change_password_sheet.dart';
-import 'package:flutter_mvvm_starter/features/auth/viewModel/change_password_cubit.dart';
 import 'package:flutter_mvvm_starter/features/auth/viewModel/sign_in_cubit.dart';
 import 'package:flutter_mvvm_starter/utils/app_dialog.dart';
 import 'package:flutter_mvvm_starter/utils/bloc/states/default_state.dart';
@@ -18,11 +16,8 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => injector<SignInCubit>()),
-        BlocProvider(create: (_) => injector<ChangePasswordCubit>()),
-      ],
+    return BlocProvider(
+      create: (_) => injector<SignInCubit>(),
       child: const _SignInView(),
     );
   }
@@ -37,13 +32,13 @@ class _SignInView extends StatefulWidget {
 
 class _SignInViewState extends State<_SignInView> {
   final _formKey = GlobalKey<FormState>();
-  final _usernameCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _usernameCtrl.dispose();
+    _emailCtrl.dispose();
     _passwordCtrl.dispose();
     super.dispose();
   }
@@ -51,7 +46,7 @@ class _SignInViewState extends State<_SignInView> {
   void _submit() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     context.read<SignInCubit>().signIn(
-          username: _usernameCtrl.text.trim(),
+          email: _emailCtrl.text.trim(),
           password: _passwordCtrl.text,
         );
   }
@@ -59,26 +54,17 @@ class _SignInViewState extends State<_SignInView> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignInCubit, DefaultState<UserModel>>(
-      listener: (context, state) async {
+      listener: (context, state) {
         state.when(
           init: () {},
           loading: AppDialog.showLoading,
-          success: (user) {
+          success: (_) {
             AppDialog.dismiss();
             context.goNamed(AppRoutes.home);
           },
           fail: (failure) {
             AppDialog.dismiss();
             AppDialog.showError(message: failure.message);
-          },
-          requiresAction: (user) async {
-            AppDialog.dismiss();
-            // Forced password change — show bottom sheet.
-            final changed = await ChangePasswordSheet.show(context);
-            if (changed == true && context.mounted) {
-              await context.read<SignInCubit>().completeSignIn();
-              if (context.mounted) context.goNamed(AppRoutes.home);
-            }
           },
         );
       },
@@ -97,7 +83,6 @@ class _SignInViewState extends State<_SignInView> {
                 children: [
                   const SizedBox(height: AppDimensions.paddingLarge),
 
-                  // ─── Logo / Title ──────────────────────────────────────
                   Center(
                     child: Column(
                       children: [
@@ -110,7 +95,7 @@ class _SignInViewState extends State<_SignInView> {
                         ),
                         const SizedBox(height: AppDimensions.paddingSmall),
                         Text(
-                          'Welcome back! Please sign in to continue.',
+                          'Demo login — enter any email and password.',
                           style: context.textTheme.bodyMedium?.copyWith(
                             color: context.colorScheme.onSurfaceVariant,
                           ),
@@ -121,20 +106,19 @@ class _SignInViewState extends State<_SignInView> {
                   ),
                   const SizedBox(height: AppDimensions.paddingLargeL),
 
-                  // ─── Username ──────────────────────────────────────────
                   TextFormField(
-                    controller: _usernameCtrl,
+                    controller: _emailCtrl,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
+                    autocorrect: false,
                     decoration: const InputDecoration(
-                      labelText: 'Username / Email',
-                      prefixIcon: Icon(Icons.person_outline),
+                      labelText: 'Email',
+                      prefixIcon: Icon(Icons.email_outlined),
                     ),
-                    validator: FormValidator.required('Username').call,
+                    validator: FormValidator.email().call,
                   ),
                   const SizedBox(height: AppDimensions.paddingDefault),
 
-                  // ─── Password ──────────────────────────────────────────
                   TextFormField(
                     controller: _passwordCtrl,
                     obscureText: _obscurePassword,
@@ -157,7 +141,6 @@ class _SignInViewState extends State<_SignInView> {
                   ),
                   const SizedBox(height: AppDimensions.paddingLarge),
 
-                  // ─── Submit ────────────────────────────────────────────
                   ElevatedButton(
                     onPressed: _submit,
                     style: ElevatedButton.styleFrom(

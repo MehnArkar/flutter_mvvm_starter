@@ -16,13 +16,10 @@ part 'default_state.freezed.dart';
 ///   • loading         — request in flight
 ///   • success(data)   — request succeeded
 ///   • fail(failure)   — request failed
-///   • requiresAction(data) — success but UI must take a follow-up action
-///                            (e.g. mustChangePassword after sign-in)
 @freezed
 sealed class DefaultState<T> with _$DefaultState<T> {
   const factory DefaultState.init() = DefaultInitState;
   const factory DefaultState.loading() = DefaultLoadingState;
   const factory DefaultState.success(T data) = DefaultSuccessState;
   const factory DefaultState.fail(Failure failure) = DefaultFailState;
-  const factory DefaultState.requiresAction(T data) = DefaultRequiresActionState;
 }

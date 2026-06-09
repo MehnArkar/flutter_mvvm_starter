@@ -9,14 +9,16 @@ import 'package:flutter_mvvm_starter/core/network/api_endpoints.dart';
 class AuthDataSource extends ApiClient {
   const AuthDataSource({required super.dio});
 
+  /// Reference implementation for a real sign-in endpoint.
+  /// Wire this up from [AuthRepository.signIn] when connecting to your API.
   Future<Either<Failure, Response>> signIn({
-    required String username,
+    required String email,
     required String password,
   }) =>
       requestAPI(
         () => dio.post(
           ApiEndpoints.signIn,
-          data: {'username': username, 'password': password},
+          data: {'email': email, 'password': password},
         ),
       );
 
@@ -27,20 +29,6 @@ class AuthDataSource extends ApiClient {
         () => dio.post(
           ApiEndpoints.logout,
           data: {'refreshToken': refreshToken},
-        ),
-      );
-
-  Future<Either<Failure, Response>> changePassword({
-    required String currentPassword,
-    required String newPassword,
-  }) =>
-      requestAPI(
-        () => dio.post(
-          ApiEndpoints.changePassword,
-          data: {
-            'currentPassword': currentPassword,
-            'newPassword': newPassword,
-          },
         ),
       );
 

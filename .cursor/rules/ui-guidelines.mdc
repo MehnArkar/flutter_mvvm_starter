@@ -1,0 +1,70 @@
+---
+description: UI coding rules — theming, spacing, colors, dialogs, and no hard-coded values
+globs: lib/**/view/**/*.dart
+alwaysApply: false
+---
+
+# UI Guidelines
+
+## Theme — use ContextExtension, never Theme.of()
+
+```dart
+// ✅ Correct
+context.textTheme.titleMedium
+context.colorScheme.primary
+context.colorScheme.surfaceBright
+
+// ❌ Never
+Theme.of(context).textTheme.titleMedium
+```
+
+## Spacing and sizing — AppDimensions only
+
+```dart
+// ✅ Correct
+padding: EdgeInsets.all(AppDimensions.paddingMedium)
+borderRadius: BorderRadius.circular(AppDimensions.radiusMedium)
+minimumSize: Size.fromHeight(AppDimensions.buttonHeight)
+
+// ❌ Never
+padding: EdgeInsets.all(16)
+```
+
+## Colors — colorScheme / AppColors only
+
+```dart
+// ✅ Correct
+color: context.colorScheme.error
+color: AppColors.brand
+
+// ❌ Never
+color: Color(0xFFE53935)
+```
+
+## Screen dimensions — ContextExtension shortcuts
+
+```dart
+context.sw           // MediaQuery screen width
+context.sh           // MediaQuery screen height
+context.topPadding   // Safe-area top inset
+context.bottomPadding
+```
+
+## Dialogs — BlocListener only
+
+Show all `AppDialog` calls inside `BlocListener`, never inside `BlocBuilder` or `build()`.
+
+```dart
+// ✅ Correct placement
+BlocListener<MyCubit, DefaultState<MyModel>>(
+  listener: (context, state) {
+    state.when(
+      loading: AppDialog.showLoading,
+      success: (_) { AppDialog.dismiss(); },
+      fail: (f) { AppDialog.dismiss(); AppDialog.showError(message: f.message); },
+      init: () {},
+    );
+  },
+  child: ...,
+)
+```

@@ -1,0 +1,72 @@
+---
+description: Repository, DataSource, and Freezed model conventions for the data layer
+globs: lib/features/**/data/**/*.dart
+alwaysApply: false
+---
+
+# Data Layer Conventions
+
+## Repository — parse responses, return Either
+
+```dart
+// ✅ Correct
+Future<Either<Failure, UserModel>> getUser(String id) async {
+  final result = await _dataSource.getUser(id);
+  return result.fold(
+    left,
+    (response) => right(UserModel.fromJson(response.data['data'])),
+  );
+}
+```
+
+- Use lowercase `left` / `right()` from dartz — never `Left.new` / `Right(...)`.
+- Never throw from a repository — always catch and return `left(failure)`.
+- Repository only calls its own DataSource; it does not access `Dio` directly.
+
+**Failure types** (`core/error/failure.dart`):
+
+| Class | When to use |
+|---|---|
+| `ServerFailure` | 4xx / 5xx API responses |
+| `NetworkFailure` | Timeout or no connectivity |
+| `SystemFailure` | Unexpected Dart exceptions (e.g. JSON parse error) |
+
+## DataSource — thin HTTP wrapper only
+
+```dart
+class UserDataSource extends ApiClient {
+  const UserDataSource({required super.dio});
+
+  Future<Either<Failure, Response>> getUser(String id) =>
+      requestAPI(() => dio.get('/users/$id'));
+}
+```
+
+- Extends `ApiClient`, calls `requestAPI()`.
+- Returns raw `Either<Failure, Response>` — no JSON parsing here.
+- One `DataSource` per feature; no god-object shared sources.
+
+## Models — Freezed + json_serializable
+
+```dart
+@freezed
+abstract class UserModel with _$UserModel {
+  const factory UserModel({
+    required String id,
+    required String name,
+    String? email,
+    @JsonKey(defaultValue: false) required bool isActive,
+  }) = _UserModel;
+
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
+}
+```
+
+- Always declare both part directives at the top of the file:
+  ```dart
+  part 'my_model.g.dart';
+  part 'my_model.freezed.dart';
+  ```
+- Use `@JsonKey(defaultValue: ...)` for nullable or defaultable fields.
+- After any model edit: `dart run build_runner build --delete-conflicting-outputs`

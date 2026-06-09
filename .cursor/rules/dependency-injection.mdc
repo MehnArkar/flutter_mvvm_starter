@@ -1,0 +1,73 @@
+---
+description: GetIt DI registration rules, local storage decisions, and GoRouter conventions
+globs: lib/core/di/**/*.dart,lib/core/local/**/*.dart,lib/config/routes/**/*.dart
+alwaysApply: false
+---
+
+# Dependency Injection, Storage, and Routing
+
+## GetIt — registration lifetimes
+
+| Type | Registration | Why |
+|---|---|---|
+| Cubit | `registerFactory` | Fresh instance per page/provider |
+| Repository / DataSource | `registerLazySingleton` | One instance, created on first use |
+| SessionManager / Dio | `registerLazySingleton` | One instance, created on first use |
+| SharedPreferences | `registerSingleton` | Eagerly initialized in `_registerCore` |
+
+Global accessor: `injector` from `service_locator.dart`.
+
+Always resolve via `injector<T>()` — never instantiate a registered type with `MyClass()`.
+
+## Per-feature module pattern
+
+```dart
+// lib/core/di/modules/user_module.dart
+class UserModule {
+  static void register() {
+    injector.registerLazySingleton(
+      () => UserDataSource(dio: injector<Dio>()),
+    );
+    injector.registerLazySingleton(
+      () => UserRepository(dataSource: injector<UserDataSource>()),
+    );
+    injector.registerFactory(
+      () => GetUserCubit(repository: injector<UserRepository>()),
+    );
+  }
+}
+```
+
+Call `UserModule.register()` from `ServiceLocator.injectDependencies()`.
+
+## Local storage — which class to use
+
+| Data | Class | Backend |
+|---|---|---|
+| Tokens, user JSON (sensitive) | `SessionManager` | `FlutterSecureStorage` |
+| Feature flags, locale, onboarding | `LocalDataSource` | `SharedPreferences` |
+
+`LocalDataSource` is constructor-injected with a `SharedPreferences` instance — no `init()` call needed.
+
+A Cubit may inject `SessionManager` directly **only** for session lifecycle (sign-in / logout). All other data goes through a Repository.
+
+## Routing — GoRouter
+
+```dart
+// Add name constant
+class AppRoutes {
+  static const String userProfile = 'user_profile';
+}
+
+// Add GoRoute in AppRouter.goRouter
+GoRoute(
+  path: '/${AppRoutes.userProfile}',
+  name: AppRoutes.userProfile,
+  builder: (_, __) => const UserProfilePage(),
+),
+
+// Navigate
+context.goNamed(AppRoutes.userProfile);
+```
+
+- Never create a second `GlobalKey<NavigatorState>` — use `AppRouter.navigatorKey`.

@@ -1,0 +1,74 @@
+---
+description: Cubit state management patterns, BlocProvider setup, and AppDialog usage
+globs: lib/**/*.dart
+alwaysApply: false
+---
+
+# Cubit Patterns
+
+## State types
+
+- `Cubit<DefaultState<T>>` — single-result operations (fetch, submit, delete)
+- `Cubit<PaginationState<T>>` — paginated list screens
+- Never use `Bloc` with events unless the feature has genuinely complex event-driven logic.
+
+## Emit order: `loading` → `success` / `fail`
+
+```dart
+class GetUserCubit extends Cubit<DefaultState<UserModel>> {
+  final UserRepository _repo;
+
+  GetUserCubit({required UserRepository repo})
+      : _repo = repo,
+        super(const DefaultState.init());
+
+  Future<void> getUser(String id) async {
+    emit(const DefaultState.loading());
+    final result = await _repo.getUser(id);
+    result.fold(
+      (failure) => emit(DefaultState.fail(failure)),
+      (user)    => emit(DefaultState.success(user)),
+    );
+  }
+}
+```
+
+## BlocProvider — always provide from `injector` at the page level
+
+```dart
+class UserPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => injector<UserCubit>(),
+      child: const _UserView(),
+    );
+  }
+}
+```
+
+The private `_UserView` (`StatefulWidget`) handles the form state and calls the cubit.
+
+## AppDialog — always in `BlocListener`, never in `BlocBuilder`
+
+```dart
+BlocListener<UserCubit, DefaultState<UserModel>>(
+  listener: (context, state) {
+    state.when(
+      init:    () {},
+      loading: AppDialog.showLoading,
+      success: (_) {
+        AppDialog.dismiss();
+        context.goNamed(AppRoutes.home);
+      },
+      fail: (failure) {
+        AppDialog.dismiss();
+        AppDialog.showError(message: failure.message);
+      },
+    );
+  },
+  child: ...,
+)
+```
+
+Available dialogs: `showLoading()` · `dismiss()` · `showSuccess(title, message)` · `showError(message)` · `showConfirm(title, onConfirm)`.

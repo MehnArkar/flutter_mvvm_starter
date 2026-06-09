@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mvvm_starter/app/app.dart';
 import 'package:flutter_mvvm_starter/core/di/service_locator.dart';
-import 'package:flutter_mvvm_starter/core/local/local_data_source.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,8 +15,6 @@ Future<void> main() async {
   }
 
   await ServiceLocator.injectDependencies();
-  await LocalDataSource().init();
 
   runApp(const MyApp());
 }
-

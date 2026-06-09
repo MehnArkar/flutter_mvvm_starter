@@ -1,0 +1,63 @@
+---
+description: When and how to add a Use Case layer between Cubit and Repository
+globs: lib/**/domain/**/*.dart
+alwaysApply: false
+---
+
+# Use Cases
+
+Omitted by default. Add a Use Case when **any** of these apply:
+
+- **Shared logic** — the same business operation is needed by two or more Cubits or features
+- **Complex orchestration** — operation involves multiple repositories, data transformations, or domain rules that don't belong in the Cubit
+- **Independent testability** — a critical business rule that warrants its own unit test, separate from cubit and repository tests
+
+**Do not add** a Use Case for simple repository calls (fetch / save / delete) where the Cubit just delegates and maps state.
+
+## Folder placement
+
+```
+lib/features/<feature>/
+  data/               ← unchanged
+  domain/
+    usecases/         get_active_orders_use_case.dart
+  view/               ← unchanged
+  viewModel/          ← Cubit injects UseCase, not Repository
+```
+
+## Template
+
+```dart
+class GetActiveOrdersUseCase {
+  final OrderRepository _orders;
+  final UserRepository _users;
+
+  GetActiveOrdersUseCase({
+    required OrderRepository orders,
+    required UserRepository users,
+  })  : _orders = orders,
+        _users = users;
+
+  Future<Either<Failure, List<Order>>> call(String userId) async {
+    final userResult = await _users.getUser(userId);
+    return userResult.fold(
+      left,
+      (user) => _orders.getActiveOrders(userId: user.id, role: user.role),
+    );
+  }
+}
+```
+
+## DI registration (when a Use Case is added)
+
+```dart
+injector.registerFactory(
+  () => GetActiveOrdersUseCase(
+    orders: injector<OrderRepository>(),
+    users: injector<UserRepository>(),
+  ),
+);
+injector.registerFactory(
+  () => OrdersCubit(getActiveOrders: injector<GetActiveOrdersUseCase>()),
+);
+```

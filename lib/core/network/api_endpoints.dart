@@ -11,7 +11,6 @@ class ApiEndpoints {
   static const String signIn = '/auth/login';
   static const String refreshToken = '/auth/refresh';
   static const String logout = '/auth/logout';
-  static const String changePassword = '/auth/change-password';
   static const String profile = '/auth/profile';
 
   // ─── Push notifications ───────────────────────────────────────────────────

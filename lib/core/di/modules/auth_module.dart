@@ -3,7 +3,6 @@ import 'package:flutter_mvvm_starter/core/di/service_locator.dart';
 import 'package:flutter_mvvm_starter/core/local/session_manager.dart';
 import 'package:flutter_mvvm_starter/features/auth/data/datasources/auth_data_source.dart';
 import 'package:flutter_mvvm_starter/features/auth/data/repositories/auth_repository.dart';
-import 'package:flutter_mvvm_starter/features/auth/viewModel/change_password_cubit.dart';
 import 'package:flutter_mvvm_starter/features/auth/viewModel/logout_cubit.dart';
 import 'package:flutter_mvvm_starter/features/auth/viewModel/sign_in_cubit.dart';
 
@@ -30,9 +29,6 @@ class AuthModule {
         authRepository: injector<AuthRepository>(),
         sessionManager: injector<SessionManager>(),
       ),
-    );
-    injector.registerFactory(
-      () => ChangePasswordCubit(authRepository: injector<AuthRepository>()),
     );
   }
 }

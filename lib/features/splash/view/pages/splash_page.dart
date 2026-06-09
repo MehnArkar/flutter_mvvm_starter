@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_mvvm_starter/config/routes/app_routes.dart';
+import 'package:flutter_mvvm_starter/core/di/service_locator.dart';
 import 'package:flutter_mvvm_starter/core/local/session_manager.dart';
 import 'package:flutter_mvvm_starter/features/auth/data/repositories/auth_repository.dart';
 
@@ -29,7 +30,7 @@ class _SplashPageState extends State<SplashPage> {
 
     if (!mounted) return;
 
-    final sessionManager = SessionManager();
+    final sessionManager = injector<SessionManager>();
 
     if (await sessionManager.isLoggedIn) {
       final userJson = await sessionManager.getUserJson();

@@ -55,15 +55,14 @@ extension DefaultStatePatterns<T> on DefaultState<T> {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DefaultInitState<T> value)?  init,TResult Function( DefaultLoadingState<T> value)?  loading,TResult Function( DefaultSuccessState<T> value)?  success,TResult Function( DefaultFailState<T> value)?  fail,TResult Function( DefaultRequiresActionState<T> value)?  requiresAction,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DefaultInitState<T> value)?  init,TResult Function( DefaultLoadingState<T> value)?  loading,TResult Function( DefaultSuccessState<T> value)?  success,TResult Function( DefaultFailState<T> value)?  fail,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case DefaultInitState() when init != null:
 return init(_that);case DefaultLoadingState() when loading != null:
 return loading(_that);case DefaultSuccessState() when success != null:
 return success(_that);case DefaultFailState() when fail != null:
-return fail(_that);case DefaultRequiresActionState() when requiresAction != null:
-return requiresAction(_that);case _:
+return fail(_that);case _:
   return orElse();
 
 }
@@ -81,15 +80,14 @@ return requiresAction(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DefaultInitState<T> value)  init,required TResult Function( DefaultLoadingState<T> value)  loading,required TResult Function( DefaultSuccessState<T> value)  success,required TResult Function( DefaultFailState<T> value)  fail,required TResult Function( DefaultRequiresActionState<T> value)  requiresAction,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DefaultInitState<T> value)  init,required TResult Function( DefaultLoadingState<T> value)  loading,required TResult Function( DefaultSuccessState<T> value)  success,required TResult Function( DefaultFailState<T> value)  fail,}){
 final _that = this;
 switch (_that) {
 case DefaultInitState():
 return init(_that);case DefaultLoadingState():
 return loading(_that);case DefaultSuccessState():
 return success(_that);case DefaultFailState():
-return fail(_that);case DefaultRequiresActionState():
-return requiresAction(_that);}
+return fail(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -103,15 +101,14 @@ return requiresAction(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DefaultInitState<T> value)?  init,TResult? Function( DefaultLoadingState<T> value)?  loading,TResult? Function( DefaultSuccessState<T> value)?  success,TResult? Function( DefaultFailState<T> value)?  fail,TResult? Function( DefaultRequiresActionState<T> value)?  requiresAction,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DefaultInitState<T> value)?  init,TResult? Function( DefaultLoadingState<T> value)?  loading,TResult? Function( DefaultSuccessState<T> value)?  success,TResult? Function( DefaultFailState<T> value)?  fail,}){
 final _that = this;
 switch (_that) {
 case DefaultInitState() when init != null:
 return init(_that);case DefaultLoadingState() when loading != null:
 return loading(_that);case DefaultSuccessState() when success != null:
 return success(_that);case DefaultFailState() when fail != null:
-return fail(_that);case DefaultRequiresActionState() when requiresAction != null:
-return requiresAction(_that);case _:
+return fail(_that);case _:
   return null;
 
 }
@@ -128,14 +125,13 @@ return requiresAction(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function()?  loading,TResult Function( T data)?  success,TResult Function( Failure failure)?  fail,TResult Function( T data)?  requiresAction,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  init,TResult Function()?  loading,TResult Function( T data)?  success,TResult Function( Failure failure)?  fail,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case DefaultInitState() when init != null:
 return init();case DefaultLoadingState() when loading != null:
 return loading();case DefaultSuccessState() when success != null:
 return success(_that.data);case DefaultFailState() when fail != null:
-return fail(_that.failure);case DefaultRequiresActionState() when requiresAction != null:
-return requiresAction(_that.data);case _:
+return fail(_that.failure);case _:
   return orElse();
 
 }
@@ -153,14 +149,13 @@ return requiresAction(_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function()  loading,required TResult Function( T data)  success,required TResult Function( Failure failure)  fail,required TResult Function( T data)  requiresAction,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  init,required TResult Function()  loading,required TResult Function( T data)  success,required TResult Function( Failure failure)  fail,}) {final _that = this;
 switch (_that) {
 case DefaultInitState():
 return init();case DefaultLoadingState():
 return loading();case DefaultSuccessState():
 return success(_that.data);case DefaultFailState():
-return fail(_that.failure);case DefaultRequiresActionState():
-return requiresAction(_that.data);}
+return fail(_that.failure);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -174,14 +169,13 @@ return requiresAction(_that.data);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function()?  loading,TResult? Function( T data)?  success,TResult? Function( Failure failure)?  fail,TResult? Function( T data)?  requiresAction,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  init,TResult? Function()?  loading,TResult? Function( T data)?  success,TResult? Function( Failure failure)?  fail,}) {final _that = this;
 switch (_that) {
 case DefaultInitState() when init != null:
 return init();case DefaultLoadingState() when loading != null:
 return loading();case DefaultSuccessState() when success != null:
 return success(_that.data);case DefaultFailState() when fail != null:
-return fail(_that.failure);case DefaultRequiresActionState() when requiresAction != null:
-return requiresAction(_that.data);case _:
+return fail(_that.failure);case _:
   return null;
 
 }
@@ -195,7 +189,6 @@ return requiresAction(_that.data);case _:
 class DefaultInitState<T> implements DefaultState<T> {
   const DefaultInitState();
   
-
 
 
 
@@ -379,72 +372,6 @@ class _$DefaultFailStateCopyWithImpl<T,$Res>
   return _then(DefaultFailState<T>(
 null == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class DefaultRequiresActionState<T> implements DefaultState<T> {
-  const DefaultRequiresActionState(this.data);
-  
-
- final  T data;
-
-/// Create a copy of DefaultState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$DefaultRequiresActionStateCopyWith<T, DefaultRequiresActionState<T>> get copyWith => _$DefaultRequiresActionStateCopyWithImpl<T, DefaultRequiresActionState<T>>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DefaultRequiresActionState<T>&&const DeepCollectionEquality().equals(other.data, data));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data));
-
-@override
-String toString() {
-  return 'DefaultState<$T>.requiresAction(data: $data)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $DefaultRequiresActionStateCopyWith<T,$Res> implements $DefaultStateCopyWith<T, $Res> {
-  factory $DefaultRequiresActionStateCopyWith(DefaultRequiresActionState<T> value, $Res Function(DefaultRequiresActionState<T>) _then) = _$DefaultRequiresActionStateCopyWithImpl;
-@useResult
-$Res call({
- T data
-});
-
-
-
-
-}
-/// @nodoc
-class _$DefaultRequiresActionStateCopyWithImpl<T,$Res>
-    implements $DefaultRequiresActionStateCopyWith<T, $Res> {
-  _$DefaultRequiresActionStateCopyWithImpl(this._self, this._then);
-
-  final DefaultRequiresActionState<T> _self;
-  final $Res Function(DefaultRequiresActionState<T>) _then;
-
-/// Create a copy of DefaultState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? data = freezed,}) {
-  return _then(DefaultRequiresActionState<T>(
-freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as T,
   ));
 }
 
